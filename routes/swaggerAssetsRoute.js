@@ -5,23 +5,32 @@ const swaggerDocument = require("../swagger.json");
 
 const router = express.Router();
 
+// CSS kustom untuk Swagger UI
 const customCss = `
-    .swagger-ui .topbar .link {
-        display: none;
-    }
-    .swagger-ui .topbar:before {
-        content: "Akuivan13 - Website";
-        display: block;
-        font-weight: bold;
-        color: black;
-        font-size: 20px;
-        margin: 15px 0;
-        text-align: left;
-        padding-left: 80px;
+    .swagger-ui {
+        background-image: url('https://pomf2.lain.la/f/z08tomiw.jpg');
+        background-size: cover;
+        background-position: center;
     }
     .swagger-ui .topbar {
-        background: url('https://telegra.ph/file/727ec9ce1a059ca515074.jpg') no-repeat;
-        background-size: contain;
+        background: rgba(0, 0, 0, 0.7) !important;
+    }
+    .swagger-ui .topbar .download-continue,
+    .swagger-ui .topbar .title,
+    .swagger-ui .topbar .link {
+        color: #fff !important;
+    }
+    .swagger-ui .info,
+    .swagger-ui .scheme-container {
+        background: rgba(0, 0, 0, 0.5) !important;
+        color: #fff !important;
+    }
+    .swagger-ui .btn {
+        background-color: #007bff !important;
+        color: #fff !important;
+    }
+    .swagger-ui .btn:hover {
+        background-color: #0056b3 !important;
     }
 `;
 
@@ -32,25 +41,23 @@ router.get(
   swaggerUi.setup(swaggerDocument, { customCss })
 );
 
+// Middleware untuk melayani file Swagger UI assets
 router.get("/swagger-ui.css", async (req, res) => {
-  const url =
-    "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.50.0/swagger-ui.min.css";
+  const url = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.50.0/swagger-ui.min.css";
   const response = await axios.get(url);
   res.set("Content-Type", "text/css");
   res.send(response.data);
 });
 
 router.get("/swagger-ui-bundle.js", async (req, res) => {
-  const url =
-    "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.50.0/swagger-ui-bundle.min.js";
+  const url = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.50.0/swagger-ui-bundle.min.js";
   const response = await axios.get(url);
   res.set("Content-Type", "application/javascript");
   res.send(response.data);
 });
 
 router.get("/swagger-ui-standalone-preset.js", async (req, res) => {
-  const url =
-    "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.50.0/swagger-ui-standalone-preset.min.js";
+  const url = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.50.0/swagger-ui-standalone-preset.min.js";
   const response = await axios.get(url);
   res.set("Content-Type", "application/javascript");
   res.send(response.data);
@@ -58,7 +65,7 @@ router.get("/swagger-ui-standalone-preset.js", async (req, res) => {
 
 router.get("/swagger-ui-init.js", async (req, res) => {
   res.set("Content-Type", "application/javascript");
-  res.send(` window.onload = function () {
+  res.send(`window.onload = function () {
     const ui = SwaggerUIBundle({
       url: "/swagger.json",
       dom_id: "#swagger-ui",
@@ -78,7 +85,7 @@ router.use((req, res, next) => {
   }
 });
 
-// Tambahkan rute untuk menampilkan swagger.json jika diperlukan
+// Rute untuk menampilkan swagger.json jika diperlukan
 router.get("/swagger.json", (req, res) => {
   res.json(swaggerDocument);
 });
