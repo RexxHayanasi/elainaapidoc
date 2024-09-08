@@ -8,13 +8,15 @@ const router = express.Router();
 // CSS kustom untuk Swagger UI
 const customCss = `
     .swagger-ui {
-        background-image: url('https://example.com/your-custom-background.jpg'); /* Ganti URL ini dengan gambar latar belakang Anda */
-        background-size: cover;
-        background-position: center;
+        background-image: url('https://pomf2.lain.la/f/x71nesm.png'); /* Ganti URL ini dengan gambar latar belakang Anda */
+        background-size: cover; /* Menyesuaikan gambar latar belakang untuk mencakup seluruh area */
+        background-position: center; /* Menempatkan gambar di tengah elemen */
+        background-repeat: no-repeat; /* Mencegah pengulangan gambar */
+        min-height: 100vh; /* Mengatur tinggi minimum elemen agar sesuai dengan tinggi tampilan */
     }
     .swagger-ui .topbar {
         background: rgba(0, 0, 0, 0.8) !important;
-        border-bottom: 2px solid #007bff;
+        border-bottom: 3px solid #007bff; /* Border bawah yang lebih tebal untuk topbar */
     }
     .swagger-ui .topbar .download-continue,
     .swagger-ui .topbar .title,
@@ -27,6 +29,7 @@ const customCss = `
         color: #e0e0e0 !important;
         border-radius: 8px;
         padding: 10px;
+        border: 1px solid #007bff; /* Border untuk info dan scheme container */
     }
     .swagger-ui .btn {
         background-color: #007bff !important;
@@ -34,6 +37,7 @@ const customCss = `
         border-radius: 4px;
         padding: 8px 16px;
         font-weight: bold;
+        border: none; /* Menghapus border default dari tombol */
     }
     .swagger-ui .btn:hover {
         background-color: #0056b3 !important;
@@ -57,12 +61,16 @@ const customCss = `
         background: #007bff;
         color: #fff;
         border-bottom: 1px solid #0056b3;
+        border-radius: 8px 8px 0 0; /* Rounded top corners */
+        padding: 8px;
     }
     .swagger-ui .opblock-summary {
         font-weight: bold;
     }
     .swagger-ui .opblock-body {
         background: rgba(0, 0, 0, 0.4);
+        border-radius: 0 0 8px 8px; /* Rounded bottom corners */
+        padding: 10px;
     }
 `;
 
