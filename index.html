@@ -3,65 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Documentation</title>
+    <title>Elaina API Documentation</title>
     <link rel="shortcut icon" href="https://files.catbox.moe/hbnnzs.jpg_" type="image/x-icon" />
-    <!-- Font -->
-    <link rel="stylesheet" href="https://xynz.vercel.app/data/font/ambisi.otf">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #794afa;
+            --accent-color: #feca57;
+            --dark-color: #1a1a2e;
+            --light-color: #f8f9fa;
+        }
+        
         html, body {
             margin: 0;
             height: 100%;
-            background: #111;
-            font-family: 'Ambisi', sans-serif;
-            color: #fff;
-            overflow: hidden; /* Prevent scroll bars */
+            background: var(--dark-color);
+            font-family: 'Poppins', sans-serif;
+            color: var(--light-color);
+            overflow-x: hidden;
         }
 
         .hero {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Ensure background is behind content */
+            z-index: -1;
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
         }
 
         .hero svg {
             width: 100%;
             height: 100%;
-            font-family: 'Ambisi', sans-serif;
         }
 
         .hero svg text {
             text-transform: uppercase;
-            animation: stroke 5s infinite alternate;
+            animation: stroke 8s infinite alternate;
             stroke-width: 2;
-            stroke: #111;
+            stroke: var(--dark-color);
             font-size: 15.5em;
-            fill: rgba(239, 223, 13, 1);
+            fill: var(--accent-color);
+            opacity: 0.7;
         }
 
         @keyframes stroke {
             0% {
-                fill: rgba(239, 223, 13, 0);
-                stroke: rgba(239, 223, 13, 1);
+                fill: rgba(254, 202, 87, 0);
+                stroke: rgba(254, 202, 87, 0.7);
                 stroke-dashoffset: 25%;
                 stroke-dasharray: 0 50%;
                 stroke-width: 2;
             }
             70% {
-                fill: rgba(239, 223, 13, 0);
-                stroke: rgba(239, 223, 13, 1);
+                fill: rgba(254, 202, 87, 0);
+                stroke: rgba(254, 202, 87, 0.7);
             }
             80% {
-                fill: rgba(239, 223, 13, 0);
-                stroke: rgba(239, 223, 13, 1);
+                fill: rgba(254, 202, 87, 0);
+                stroke: rgba(254, 202, 87, 0.7);
                 stroke-width: 3;
             }
             100% {
-                fill: rgba(239, 223, 13, 1);
-                stroke: rgba(239, 223, 13, 0);
+                fill: rgba(254, 202, 87, 0.7);
+                stroke: rgba(254, 202, 87, 0);
                 stroke-dashoffset: -25%;
                 stroke-dasharray: 50% 0;
                 stroke-width: 0;
@@ -73,60 +84,140 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             text-align: center;
-            z-index: 1; /* Ensure content is above SVG */
+            z-index: 1;
             position: relative;
-            padding: 0 20px;
+            padding: 2rem;
         }
 
         .logo {
-            width: 100px;
-            margin-bottom: 20px;
-            border-radius: 10px; /* Rounded corners for the logo */
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Subtle shadow */
+            width: 120px;
+            height: 120px;
+            margin-bottom: 1.5rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            transition: transform 0.5s ease;
+        }
+
+        .logo:hover {
+            transform: rotate(15deg) scale(1.1);
         }
 
         .title {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin: 0;
-            font-weight: bold;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.7); /* Add subtle shadow for better readability */
+            font-weight: 700;
+            color: var(--light-color);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .subtitle {
-            font-size: 1.25rem;
-            color: #ccc;
-            margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 2rem;
+            max-width: 700px;
+            line-height: 1.6;
         }
 
         .text-container {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-            flex-wrap: wrap; /* Allow buttons to wrap to new line on smaller screens */
+            gap: 1.5rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
         }
 
         .link-text {
-            background-color: #007bff;
-            color: #fff;
-            padding: 12px 24px;
-            border-radius: 5px;
-            font-size: 1rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--light-color);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
             text-decoration: none;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); /* Subtle shadow for buttons */
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: none;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
 
         .link-text:hover {
-            background-color: #0056b3;
-            transform: scale(1.05);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .link-text:focus {
-            outline: 2px solid #0056b3;
+        .link-text:active {
+            transform: translateY(1px);
+        }
+
+        .link-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .link-text:hover::before {
+            left: 100%;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            .title {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .hero svg text {
+                font-size: 10em;
+            }
+            
+            .link-text {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .title {
+                font-size: 2rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .hero svg text {
+                font-size: 6em;
+            }
         }
     </style>
 </head>
@@ -136,14 +227,145 @@
             <text x="50%" y="50%" dy=".35em" text-anchor="middle">Elaina</text>
         </svg>
     </div>
+    
+    <div id="particles-js" class="particles"></div>
+    
     <div class="container">
-        <img src="https://pomf2.lain.la/f/zp921a6n.jpg" alt="Logo" class="logo">
+        <img src="https://pomf2.lain.la/f/zp921a6n.jpg" alt="Elaina Logo" class="logo">
         <h1 class="title">API Documentation</h1>
-        <p class="subtitle">Welcome to the API documentation page!</p>
+        <p class="subtitle">Welcome to the Elaina API documentation. Explore our powerful endpoints and integrate our services seamlessly into your applications.</p>
         <div class="text-container">
-            <a href="/api-docs" class="link-text">Go to API Docs</a>
-            <a href="https://whatsapp.com/channel/0029VacDpZPJf05jSdI9qo2S" class="link-text">Follow Saluran Saya</a>
+            <a href="/api-docs" class="link-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 20h12a4 4 0 0 0 4-4V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v16"></path>
+                    <path d="M2 20h12a4 4 0 0 0 4-4V4a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v16"></path>
+                    <path d="M10 2v4"></path>
+                    <path d="M2 8h20"></path>
+                    <path d="M2 12h20"></path>
+                    <path d="M6 16h4"></path>
+                </svg>
+                API Documentation
+            </a>
+            <a href="https://whatsapp.com/channel/0029VacDpZPJf05jSdI9qo2S" class="link-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                </svg>
+                WhatsApp Channel
+            </a>
         </div>
     </div>
+
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Initialize particles.js
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', {
+                "particles": {
+                    "number": {
+                        "value": 80,
+                        "density": {
+                            "enable": true,
+                            "value_area": 800
+                        }
+                    },
+                    "color": {
+                        "value": "#feca57"
+                    },
+                    "shape": {
+                        "type": "circle",
+                        "stroke": {
+                            "width": 0,
+                            "color": "#000000"
+                        },
+                        "polygon": {
+                            "nb_sides": 5
+                        }
+                    },
+                    "opacity": {
+                        "value": 0.5,
+                        "random": false,
+                        "anim": {
+                            "enable": false,
+                            "speed": 1,
+                            "opacity_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "size": {
+                        "value": 3,
+                        "random": true,
+                        "anim": {
+                            "enable": false,
+                            "speed": 40,
+                            "size_min": 0.1,
+                            "sync": false
+                        }
+                    },
+                    "line_linked": {
+                        "enable": true,
+                        "distance": 150,
+                        "color": "#feca57",
+                        "opacity": 0.4,
+                        "width": 1
+                    },
+                    "move": {
+                        "enable": true,
+                        "speed": 2,
+                        "direction": "none",
+                        "random": false,
+                        "straight": false,
+                        "out_mode": "out",
+                        "bounce": false,
+                        "attract": {
+                            "enable": false,
+                            "rotateX": 600,
+                            "rotateY": 1200
+                        }
+                    }
+                },
+                "interactivity": {
+                    "detect_on": "canvas",
+                    "events": {
+                        "onhover": {
+                            "enable": true,
+                            "mode": "grab"
+                        },
+                        "onclick": {
+                            "enable": true,
+                            "mode": "push"
+                        },
+                        "resize": true
+                    },
+                    "modes": {
+                        "grab": {
+                            "distance": 140,
+                            "line_linked": {
+                                "opacity": 1
+                            }
+                        },
+                        "bubble": {
+                            "distance": 400,
+                            "size": 40,
+                            "duration": 2,
+                            "opacity": 8,
+                            "speed": 3
+                        },
+                        "repulse": {
+                            "distance": 200,
+                            "duration": 0.4
+                        },
+                        "push": {
+                            "particles_nb": 4
+                        },
+                        "remove": {
+                            "particles_nb": 2
+                        }
+                    }
+                },
+                "retina_detect": true
+            });
+        });
+    </script>
 </body>
 </html>
