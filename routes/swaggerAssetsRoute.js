@@ -8,272 +8,336 @@ const fs = require("fs");
 const router = express.Router();
 
 // Custom Swagger UI theme with dark mode and animations
-const customCss = `/* ------------------------------------
-   Root Variables
------------------------------------- */
+const customCss = `
 :root {
-  --primary-color: #6c63ff;
-  --secondary-color: #4a42e8;
-  --accent-color: #ff6584;
-
-  --dark-bg: #1a1a2e;
-  --card-bg: rgba(26, 26, 46, 0.9);
-  --input-bg: rgba(30, 30, 50, 0.8);
-
-  --text-color: #f8f9fa;
-  --border-color: rgba(108, 99, 255, 0.3);
-
-  --font-main: 'Poppins', sans-serif;
-  --font-mono: 'Fira Code', monospace;
-
-  --spacing-sm: 10px;
-  --spacing-md: 20px;
-
-  --radius-sm: 6px;
-  --radius-md: 12px;
-
-  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.2);
-  --shadow-btn: 0 4px 10px rgba(108, 99, 255, 0.3);
-  --shadow-btn-hover: 0 6px 15px rgba(108, 99, 255, 0.4);
+  /* 2025 Color Palette */
+  --neon-purple: #9d4cff;
+  --electric-blue: #00e5ff;
+  --cyber-pink: #ff2d75;
+  --matrix-green: #00ff9d;
+  --deep-space: #0a0a12;
+  --void-black: #050508;
+  --star-light: #f0f0ff;
+  --moon-dust: #b8b8cc;
+  
+  /* Modern Design Tokens */
+  --glass-bg: rgba(20, 20, 30, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-effect: blur(16px) saturate(180%);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --shadow-neon: 0 0 15px var(--neon-purple);
+  --transition-3d: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  --border-radius-3d: 16px;
 }
 
-/* ------------------------------------
-   Base Styles
------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+/* 2025 Font System */
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap');
 
-* {
-  transition: all 0.2s ease-in-out;
-}
-
-body.swagger-dark-mode {
-  background: var(--dark-bg);
-  color: var(--text-color);
-}
-
+/* Base Reset */
 .swagger-ui {
-  background: linear-gradient(135deg, #16213e, var(--dark-bg));
+  background: radial-gradient(ellipse at top, var(--deep-space), var(--void-black));
   min-height: 100vh;
-  font-family: var(--font-main);
-  color: var(--text-color);
+  color: var(--star-light);
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  line-height: 1.8;
+  font-size: 16px;
+  letter-spacing: 0.02em;
 }
 
-/* ------------------------------------
-   Topbar
------------------------------------- */
+/* Cyberpunk Topbar */
 .swagger-ui .topbar {
-  background: rgba(0, 0, 0, 0.7);
-  border-bottom: 2px solid var(--primary-color);
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-  padding: var(--spacing-sm) 0;
-  backdrop-filter: blur(10px);
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-effect);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-xl);
+  padding: 1rem 0;
 }
 
 .swagger-ui .topbar .title {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--text-color);
+  font-size: 1.8rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--neon-purple), var(--electric-blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 1rem;
 }
 
-.swagger-ui .topbar .title::before {
+.swagger-ui .topbar .title:before {
   content: "";
   display: inline-block;
-  width: 30px;
-  height: 30px;
-  background-image: url('https://pomf2.lain.la/f/zp921a6n.jpg');
-  background-size: cover;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: url('https://pomf2.lain.la/f/zp921a6n.jpg') center/cover;
   border-radius: 50%;
-  border: 2px solid var(--primary-color);
+  border: 2px solid var(--neon-purple);
+  box-shadow: var(--shadow-neon);
+  transition: var(--transition-3d);
 }
 
-/* ------------------------------------
-   Info & Scheme Container
------------------------------------- */
+.swagger-ui .topbar .title:hover:before {
+  transform: rotate(15deg) scale(1.1);
+  box-shadow: 0 0 25px var(--neon-purple);
+}
+
+/* Holographic Cards */
 .swagger-ui .info,
 .swagger-ui .scheme-container {
-  background: var(--card-bg);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--border-color);
-  box-shadow: var(--shadow-card);
-  padding: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-effect);
+  border-radius: var(--border-radius-3d);
+  padding: 2rem;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-xl);
+  margin-bottom: 2rem;
+  transition: var(--transition-3d);
+}
+
+.swagger-ui .info:hover,
+.swagger-ui .scheme-container:hover {
+  transform: translateY(-5px) rotateX(5deg);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
 }
 
 .swagger-ui .info .title {
-  color: var(--primary-color);
-  font-size: 2rem;
-  margin-bottom: var(--spacing-sm);
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
 }
 
 .swagger-ui .info .description {
-  font-size: 1.1rem;
-  line-height: 1.6;
+  font-size: 1.2rem;
+  color: var(--moon-dust);
 }
 
-/* ------------------------------------
-   Buttons
------------------------------------- */
+/* Quantum Buttons */
 .swagger-ui .btn {
-  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-  color: white;
+  background: linear-gradient(135deg, var(--neon-purple), var(--cyber-pink)) !important;
+  color: white !important;
+  border-radius: 12px;
+  padding: 1rem 2rem;
   font-weight: 600;
-  font-size: 0.8rem;
-  padding: 10px 20px;
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-btn);
   border: none;
+  box-shadow: 0 10px 30px rgba(157, 76, 255, 0.5);
+  transition: var(--transition-3d);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-  cursor: pointer;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+.swagger-ui .btn:after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    to bottom right,
+    rgba(255, 255, 255, 0.3) 0%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  transform: rotate(30deg);
+  transition: all 0.7s ease;
 }
 
 .swagger-ui .btn:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-btn-hover);
-  background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 40px rgba(255, 45, 117, 0.6);
 }
 
-/* ------------------------------------
-   Inputs & Selects
------------------------------------- */
+.swagger-ui .btn:hover:after {
+  left: 100%;
+  top: 100%;
+}
+
+/* Neural Network Inputs */
 .swagger-ui .scheme-container select,
 .swagger-ui .scheme-container input {
-  background-color: var(--input-bg);
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
+  background: rgba(30, 30, 45, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  color: var(--star-light);
+  padding: 0.8rem 1.2rem;
+  transition: var(--transition-3d);
+  font-family: 'Space Grotesk', sans-serif;
+  backdrop-filter: blur(5px);
 }
 
-.swagger-ui .scheme-container input:focus,
-.swagger-ui .scheme-container select:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
+.swagger-ui .scheme-container select:focus,
+.swagger-ui .scheme-container input:focus {
+  border-color: var(--electric-blue);
+  box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.3);
+  outline: none;
+  background: rgba(40, 40, 60, 0.9);
 }
 
-/* ------------------------------------
-   Opblock (Endpoint Cards)
------------------------------------- */
+/* API Pods (Operation Blocks) */
 .swagger-ui .opblock {
-  background: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  margin-bottom: var(--spacing-sm);
-  overflow: hidden;
-  animation: fadeIn 0.5s ease forwards;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-effect);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-3d);
+  margin-bottom: 1.5rem;
+  transition: var(--transition-3d);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transform: translateY(20px) rotateX(10deg);
+}
+
+.swagger-ui .opblock.is-loaded {
+  opacity: 1;
+  transform: translateY(0) rotateX(0);
 }
 
 .swagger-ui .opblock:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  border-color: var(--primary-color);
+  transform: translateY(-8px) rotateX(5deg);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  border-color: var(--electric-blue);
 }
 
 .swagger-ui .opblock-header {
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  color: #fff;
-  padding: 12px;
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  background: linear-gradient(90deg, var(--neon-purple), rgba(157, 76, 255, 0.7));
+  color: white;
+  border-radius: var(--border-radius-3d) var(--border-radius-3d) 0 0;
+  padding: 1.2rem;
+  font-weight: 600;
 }
 
 .swagger-ui .opblock-summary {
-  font-weight: 600;
+  font-size: 1.2rem;
+}
+
+/* Method Quantum Tags */
+.swagger-ui .opblock .opblock-summary-method {
+  min-width: 100px;
+  padding: 0.5rem 0;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: var(--transition-3d);
+}
+
+.swagger-ui .opblock-get .opblock-summary-method {
+  background: var(--electric-blue);
+}
+
+.swagger-ui .opblock-post .opblock-summary-method {
+  background: var(--matrix-green);
+}
+
+.swagger-ui .opblock-put .opblock-summary-method,
+.swagger-ui .opblock-patch .opblock-summary-method {
+  background: var(--cyber-pink);
+}
+
+.swagger-ui .opblock-delete .opblock-summary-method {
+  background: var(--neon-purple);
+}
+
+.swagger-ui .opblock .opblock-summary-path {
+  font-family: 'Roboto Mono', monospace;
   font-size: 1.1rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
 }
 
-.swagger-ui .opblock-summary-method {
-  min-width: 80px;
-  text-align: center;
-  border-radius: var(--radius-sm);
+/* Data Stream Tables */
+.swagger-ui table thead tr th {
+  background: linear-gradient(90deg, var(--neon-purple), var(--cyber-pink));
+  color: white;
   font-weight: 600;
-  padding: 5px 0;
+  border: none !important;
 }
 
-.swagger-ui .opblock-summary-path {
-  font-family: var(--font-mono);
+.swagger-ui table tbody tr td {
+  background: rgba(40, 40, 60, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
-.swagger-ui .opblock-body {
-  background: rgba(30, 30, 50, 0.7);
-  border-radius: 0 0 var(--radius-md) var(--radius-md);
-  padding: 15px;
+/* 2025 Animations */
+@keyframes hologramAppear {
+  0% { opacity: 0; transform: translateY(30px) rotateX(15deg); }
+  100% { opacity: 1; transform: translateY(0) rotateX(0); }
 }
 
-.swagger-ui .opblock-summary-description {
-  font-style: italic;
-  color: #aaa;
+@keyframes quantumPulse {
+  0% { box-shadow: 0 0 0 0 rgba(157, 76, 255, 0.7); }
+  70% { box-shadow: 0 0 0 20px rgba(157, 76, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(157, 76, 255, 0); }
 }
 
-/* ------------------------------------
-   Tab & Status
------------------------------------- */
-.swagger-ui .tab li {
-  background: rgba(30, 30, 50, 0.7);
+.swagger-ui .opblock {
+  animation: hologramAppear 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
 }
 
-.swagger-ui .tab li.active {
-  background: var(--primary-color);
+.swagger-ui .btn.pulse {
+  animation: quantumPulse 2s infinite;
 }
 
-.swagger-ui .response-col_status {
-  font-weight: 600;
-}
-
-/* ------------------------------------
-   Animation
------------------------------------- */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ------------------------------------
-   Scrollbar
------------------------------------- */
+/* Cyber Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: rgba(30, 30, 50, 0.5);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-  border-radius: 4px;
+  width: 10px;
 }
 
-/* ------------------------------------
-   Responsive
------------------------------------- */
+::-webkit-scrollbar-track {
+  background: rgba(20, 20, 30, 0.8);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(var(--neon-purple), var(--cyber-pink));
+  border-radius: 10px;
+  border: 2px solid rgba(0, 0, 0, 0.3);
+}
+
+/* Responsive Holograms */
 @media (max-width: 768px) {
   .swagger-ui .info .title {
-    font-size: 1.5rem;
+    font-size: 2rem;
   }
-
+  
   .swagger-ui .opblock-summary {
     flex-direction: column;
-    align-items: flex-start;
+    gap: 1rem;
   }
-
-  .swagger-ui .opblock-summary-method {
-    margin-bottom: 5px;
+  
+  .swagger-ui .topbar .title {
+    font-size: 1.5rem;
   }
 }
 
-@media (max-width: 480px) {
-  .swagger-ui .topbar .title {
-    font-size: 1.2rem;
-  }
+/* Neural Interface Toggle */
+.swagger-ui .theme-toggle {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 3.5rem;
+  height: 3.5rem;
+  background: linear-gradient(135deg, var(--neon-purple), var(--cyber-pink));
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(157, 76, 255, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-3d);
+}
 
-  .swagger-ui .btn {
-    padding: 8px 12px;
-    font-size: 0.75rem;
-  }
+.swagger-ui .theme-toggle:hover {
+  transform: rotate(180deg) scale(1.1);
+  box-shadow: 0 15px 40px rgba(255, 45, 117, 0.7);
 }
 `;
 
