@@ -8,369 +8,274 @@ const fs = require("fs");
 const router = express.Router();
 
 // Custom Swagger UI theme with dark mode and animations
-const customCss = `:root {
-    /* Modern Color Palette */
-    --primary-color: #7c4dff;  /* More vibrant purple */
-    --secondary-color: #5e35b1;  /* Deeper purple */
-    --accent-color: #ff4081;  /* Vibrant pink */
-    --dark-bg: #121212;  /* True dark mode background */
-    --darker-bg: #0a0a0a;
-    --card-bg: rgba(30, 30, 40, 0.95);
-    --text-color: #ffffff;
-    --text-muted: #b0b0b0;
-    --border-color: rgba(124, 77, 255, 0.4);
-    --success-color: #00c853;  /* Brighter green */
-    --error-color: #ff1744;  /* Brighter red */
-    --warning-color: #ff9100;  /* Vibrant orange */
-    --info-color: #00b0ff;  /* Bright blue */
-    --transition-speed: 0.4s;
-    --border-radius: 14px;
-    --glow-effect: 0 0 15px rgba(124, 77, 255, 0.6);
+const customCss = `/* ------------------------------------
+   Root Variables
+------------------------------------ */
+:root {
+  --primary-color: #6c63ff;
+  --secondary-color: #4a42e8;
+  --accent-color: #ff6584;
+
+  --dark-bg: #1a1a2e;
+  --card-bg: rgba(26, 26, 46, 0.9);
+  --input-bg: rgba(30, 30, 50, 0.8);
+
+  --text-color: #f8f9fa;
+  --border-color: rgba(108, 99, 255, 0.3);
+
+  --font-main: 'Poppins', sans-serif;
+  --font-mono: 'Fira Code', monospace;
+
+  --spacing-sm: 10px;
+  --spacing-md: 20px;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.2);
+  --shadow-btn: 0 4px 10px rgba(108, 99, 255, 0.3);
+  --shadow-btn-hover: 0 6px 15px rgba(108, 99, 255, 0.4);
 }
 
-/* Load modern fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+/* ------------------------------------
+   Base Styles
+------------------------------------ */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
 
-/* Base styles with modern touch */
+* {
+  transition: all 0.2s ease-in-out;
+}
+
+body.swagger-dark-mode {
+  background: var(--dark-bg);
+  color: var(--text-color);
+}
+
 .swagger-ui {
-    background: radial-gradient(circle at top right, #1a1a2e 0%, #121212 100%);
-    background-attachment: fixed;
-    min-height: 100vh;
-    color: var(--text-color);
-    font-family: 'Inter', sans-serif;
-    line-height: 1.6;
-    font-size: 16px;
+  background: linear-gradient(135deg, #16213e, var(--dark-bg));
+  min-height: 100vh;
+  font-family: var(--font-main);
+  color: var(--text-color);
 }
 
-/* Modern topbar with glass morphism effect */
+/* ------------------------------------
+   Topbar
+------------------------------------ */
 .swagger-ui .topbar {
-    background: rgba(18, 18, 18, 0.85) !important;
-    backdrop-filter: blur(16px) saturate(180%);
-    -webkit-backdrop-filter: blur(16px) saturate(180%);
-    border-bottom: 1px solid var(--border-color);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-    padding: 15px 0;
-    transition: all var(--transition-speed) ease;
+  background: rgba(0, 0, 0, 0.7);
+  border-bottom: 2px solid var(--primary-color);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  padding: var(--spacing-sm) 0;
+  backdrop-filter: blur(10px);
 }
 
 .swagger-ui .topbar .title {
-    font-size: 1.7rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    display: flex;
-    align-items: center;
-    gap: 15px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.swagger-ui .topbar .title:before {
-    content: "";
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    background-image: url('https://pomf2.lain.la/f/zp921a6n.jpg');
-    background-size: cover;
-    border-radius: 50%;
-    border: 2px solid var(--primary-color);
-    box-shadow: var(--glow-effect);
-    transition: all var(--transition-speed) cubic-bezier(0.68, -0.55, 0.27, 1.55);
+.swagger-ui .topbar .title::before {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  background-image: url('https://pomf2.lain.la/f/zp921a6n.jpg');
+  background-size: cover;
+  border-radius: 50%;
+  border: 2px solid var(--primary-color);
 }
 
-.swagger-ui .topbar .title:hover:before {
-    transform: rotate(20deg) scale(1.1);
-    box-shadow: 0 0 20px rgba(124, 77, 255, 0.8);
-}
-
-/* Modern card design with glass effect */
+/* ------------------------------------
+   Info & Scheme Container
+------------------------------------ */
 .swagger-ui .info,
 .swagger-ui .scheme-container {
-    background: rgba(30, 30, 40, 0.8) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: var(--border-radius);
-    padding: 30px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-    margin-bottom: 30px;
-    transition: all var(--transition-speed) ease;
-}
-
-.swagger-ui .info:hover,
-.swagger-ui .scheme-container:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
-    border-color: var(--accent-color);
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-card);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
 }
 
 .swagger-ui .info .title {
-    font-size: 2.4rem;
-    margin-bottom: 20px;
-    font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1.2;
+  color: var(--primary-color);
+  font-size: 2rem;
+  margin-bottom: var(--spacing-sm);
 }
 
 .swagger-ui .info .description {
-    font-size: 1.2rem;
-    line-height: 1.8;
-    color: var(--text-muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
 }
 
-/* Modern buttons with hover effects */
+/* ------------------------------------
+   Buttons
+------------------------------------ */
 .swagger-ui .btn {
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color)) !important;
-    color: white !important;
-    border-radius: 10px;
-    padding: 14px 28px;
-    font-weight: 600;
-    border: none;
-    box-shadow: 0 5px 20px rgba(124, 77, 255, 0.5);
-    transition: all var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1);
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 1.2px;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
-}
-
-.swagger-ui .btn:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-    z-index: -1;
-    opacity: 0;
-    transition: all var(--transition-speed) ease;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 10px 20px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-btn);
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
 }
 
 .swagger-ui .btn:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 10px 30px rgba(255, 64, 129, 0.6);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-btn-hover);
+  background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
 }
 
-.swagger-ui .btn:hover:before {
-    opacity: 1;
-}
-
-/* Modern input fields */
+/* ------------------------------------
+   Inputs & Selects
+------------------------------------ */
 .swagger-ui .scheme-container select,
 .swagger-ui .scheme-container input {
-    border-radius: 10px;
-    border: 1px solid var(--border-color);
-    background: rgba(40, 40, 50, 0.8);
-    color: var(--text-color);
-    padding: 12px 18px;
-    transition: all var(--transition-speed) ease;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    backdrop-filter: blur(5px);
+  background-color: var(--input-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
 }
 
-.swagger-ui .scheme-container select:focus,
-.swagger-ui .scheme-container input:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(255, 64, 129, 0.3);
-    outline: none;
-    background: rgba(50, 50, 60, 0.9);
+.swagger-ui .scheme-container input:focus,
+.swagger-ui .scheme-container select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2);
 }
 
-/* Modern operation blocks */
+/* ------------------------------------
+   Opblock (Endpoint Cards)
+------------------------------------ */
 .swagger-ui .opblock {
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    margin-bottom: 25px;
-    overflow: hidden;
-    transition: all var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1);
-    background: rgba(35, 35, 45, 0.9);
-    backdrop-filter: blur(5px);
-    opacity: 0;
-    transform: translateY(20px);
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-}
-
-.swagger-ui .opblock.is-loaded {
-    opacity: 1;
-    transform: translateY(0);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--spacing-sm);
+  overflow: hidden;
+  animation: fadeIn 0.5s ease forwards;
 }
 
 .swagger-ui .opblock:hover {
-    transform: translateY(-7px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-    border-color: var(--accent-color);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  border-color: var(--primary-color);
 }
 
 .swagger-ui .opblock-header {
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    border-bottom: none;
-    padding: 18px;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  color: #fff;
+  padding: 12px;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
 }
 
 .swagger-ui .opblock-summary {
-    font-size: 1.2rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-/* HTTP method tags with modern look */
-.swagger-ui .opblock .opblock-summary-method {
-    min-width: 100px;
-    padding: 8px 0;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
+.swagger-ui .opblock-summary-method {
+  min-width: 80px;
+  text-align: center;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  padding: 5px 0;
 }
 
-.swagger-ui .opblock-get .opblock-summary-method {
-    background: var(--info-color);
+.swagger-ui .opblock-summary-path {
+  font-family: var(--font-mono);
 }
 
-.swagger-ui .opblock-post .opblock-summary-method {
-    background: var(--success-color);
+.swagger-ui .opblock-body {
+  background: rgba(30, 30, 50, 0.7);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  padding: 15px;
 }
 
-.swagger-ui .opblock-put .opblock-summary-method,
-.swagger-ui .opblock-patch .opblock-summary-method {
-    background: var(--warning-color);
+.swagger-ui .opblock-summary-description {
+  font-style: italic;
+  color: #aaa;
 }
 
-.swagger-ui .opblock-delete .opblock-summary-method {
-    background: var(--error-color);
-}
-
-.swagger-ui .opblock .opblock-summary-path {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 1.1rem;
-}
-
-/* Modern tabs */
+/* ------------------------------------
+   Tab & Status
+------------------------------------ */
 .swagger-ui .tab li {
-    background: rgba(40, 40, 50, 0.8);
-    transition: all var(--transition-speed) ease;
-    border-radius: 8px 8px 0 0;
-}
-
-.swagger-ui .tab li:hover {
-    background: rgba(50, 50, 60, 0.9);
+  background: rgba(30, 30, 50, 0.7);
 }
 
 .swagger-ui .tab li.active {
-    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-    font-weight: 600;
+  background: var(--primary-color);
 }
 
-/* Modern tables */
-.swagger-ui table thead tr th {
-    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-    color: white;
-    font-weight: 600;
-    border: none !important;
+.swagger-ui .response-col_status {
+  font-weight: 600;
 }
 
-.swagger-ui table tbody tr td {
-    background: rgba(40, 40, 50, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-}
-
-/* Modern animations */
+/* ------------------------------------
+   Animation
+------------------------------------ */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes float {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-    100% { transform: translateY(0); }
-}
-
-.swagger-ui .opblock {
-    animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-.swagger-ui .btn.pulse {
-    animation: float 3s ease-in-out infinite;
-}
-
-/* Modern scrollbar */
+/* ------------------------------------
+   Scrollbar
+------------------------------------ */
 ::-webkit-scrollbar {
-    width: 12px;
+  width: 8px;
 }
-
 ::-webkit-scrollbar-track {
-    background: rgba(20, 20, 30, 0.8);
-    border-radius: 10px;
+  background: rgba(30, 30, 50, 0.5);
 }
-
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(var(--primary-color), var(--accent-color));
-    border-radius: 10px;
-    border: 2px solid rgba(0, 0, 0, 0.2);
+  background: var(--primary-color);
+  border-radius: 4px;
 }
 
-/* Modern tooltips */
-.swagger-ui .tooltip {
-    background: rgba(50, 50, 60, 0.95);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(10px);
-    padding: 12px;
-    font-size: 0.9rem;
-}
-
-/* Responsive design */
+/* ------------------------------------
+   Responsive
+------------------------------------ */
 @media (max-width: 768px) {
-    .swagger-ui .info .title {
-        font-size: 2rem;
-    }
-    
-    .swagger-ui .opblock-summary {
-        flex-direction: column;
-        gap: 12px;
-    }
-    
-    .swagger-ui .opblock-summary-method {
-        width: 100%;
-    }
+  .swagger-ui .info .title {
+    font-size: 1.5rem;
+  }
+
+  .swagger-ui .opblock-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .swagger-ui .opblock-summary-method {
+    margin-bottom: 5px;
+  }
 }
 
-/* Theme toggle button */
-.swagger-ui .theme-toggle {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-    border: none;
-    border-radius: 50%;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 5px 25px rgba(124, 77, 255, 0.5);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-}
+@media (max-width: 480px) {
+  .swagger-ui .topbar .title {
+    font-size: 1.2rem;
+  }
 
-.swagger-ui .theme-toggle:hover {
-    transform: rotate(180deg) scale(1.1);
-    box-shadow: 0 8px 30px rgba(255, 64, 129, 0.7);
-}`;
+  .swagger-ui .btn {
+    padding: 8px 12px;
+    font-size: 0.75rem;
+  }
+}
+`;
 
 // Enhanced Swagger UI options
 const swaggerOptions = {
