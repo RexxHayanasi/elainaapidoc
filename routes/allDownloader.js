@@ -176,69 +176,69 @@ function sfilemobi(url) {
 }
 
 async function ytmp3(url, quality = '128') {
-  try {
-    // Cek URL valid atau tidak
-    const search = await yts(url);
-    if (!search || !search.videos.length) {
-      return { status: false, message: `Video tidak ditemukan untuk URL: ${url}` };
-    }
+  try {
+    const search = await yts(url);
+    if (!search || !search.videos.length) {
+      return { status: false, message: `Video tidak ditemukan untuk URL: ${url}` };
+    }
 
-    const video = search.videos[0];
+    const video = search.videos[0];
 
-    // Panggil Loader.to API
-    const res = await axios.get('https://loader.to/ajax/download.php', {
-      params: {
-        format: 'mp3',
-        url,
-        api: 'dfcb6d76f2f6a9894gjkege8a4ab232222' // ← ganti pakai env kalau mau aman
-      }
-    });
+    // Mulai request ke loader.to
+    const res = await axios.get('https://loader.to/ajax/download.php', {
+      params: {
+        format: 'mp3',
+        url,
+        api: 'dfcb6d76f2f6a9894gjkege8a4ab232222'
+      }
+    });
 
-    const result = res.data;
-    if (!result.success || !result.id) {
-      return { status: false, message: result.info || "Gagal membuat download task." };
-    }
+    const result = res.data;
+    if (!result.success || !result.id) {
+      return { status: false, message: result.info || "Gagal membuat tugas unduhan." };
+    }
 
-    const downloadId = result.id;
+    const downloadId = result.id;
+    let downloadUrl = '';
 
-    // Cek progress hingga 100%
-    let downloadUrl = '';
-    for (let i = 0; i < 10; i++) {
-      const progress = await axios.get('https://p.oceansaver.in/ajax/progress.php', {
-        params: { id: downloadId }
-      });
+    // Maksimal 3 kali polling (3 x 3s = 9 detik)
+    for (let i = 0; i < 3; i++) {
+      const progress = await axios.get('https://p.oceansaver.in/ajax/progress.php', {
+        params: { id: downloadId }
+      });
 
-      const data = progress.data;
+      const data = progress.data;
 
-      if (data.success && data.progress === 1000) {
-        downloadUrl = data.download_url;
-        break;
-      }
+      if (data.success && data.progress === 1000 && data.download_url) {
+        downloadUrl = data.download_url;
+        break;
+      }
 
-      await new Promise((r) => setTimeout(r, 3000)); // tunggu 3 detik
-    }
+      await new Promise(r => setTimeout(r, 3000));
+    }
 
-    if (!downloadUrl) {
-      return { status: false, message: "Gagal mendapatkan URL unduhan." };
-    }
+    if (!downloadUrl) {
+      return { status: false, message: "Gagal mendapatkan URL unduhan dalam batas waktu." };
+    }
 
-    return {
-      status: true,
-      title: video.title,
-      channel: video.author.name,
-      duration: video.timestamp,
-      thumbnail: video.thumbnail,
-      quality: `${quality}kbps`,
-      url: downloadUrl
-    };
+    return {
+      status: true,
+      title: video.title,
+      channel: video.author.name,
+      duration: video.timestamp,
+      thumbnail: video.thumbnail,
+      quality: `${quality}kbps`,
+      url: downloadUrl
+    };
 
-  } catch (err) {
-    console.error("ytmp3 error:", err);
-    return { status: fa
-lse, message: err.message || "Gagal memproses video." };
-  }
+  } catch (err) {
+    console.error("ytmp3 error:", err);
+    return { status: false, message: err.message || "Gagal memproses video." };
+  }
 }
-  
+
+
+
 async function ytmp4(url) {
   return new Promise((resolve, reject) => {
     try {
