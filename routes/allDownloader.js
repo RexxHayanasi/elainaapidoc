@@ -4,8 +4,8 @@ const axios = require('axios')
 const cheerio = require('cheerio')
 const request = require('request')
 const qs = require('qs')
-const yt = require('ytdl-core');
 const yts = require('yt-search');
+const { createDecipheriv } = require('crypto')
 
 async function mediafire(url) {
 	let res = await axios.get(url)
