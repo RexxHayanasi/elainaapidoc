@@ -5,29 +5,9 @@ const cheerio = require('cheerio')
 const request = require('request')
 const qs = require('qs')
 const yts = require('yt-search');
-const ytdl = require('ytdl-core');
 
 const audio = [92, 128, 256, 320];
 const video = [144, 360, 480, 720, 1080];
-
-const hexcode = (hex) => Buffer.from(hex, 'hex');
-const decode = (enc) => {
-    try {
-        const secret_key = 'C5D58EF67A7584E4A29F6C35BBC4EB12';
-        const data = Buffer.from(enc, 'base64');
-        const iv = data.slice(0, 16);
-        const content = data.slice(16);
-        const key = hexcode(secret_key);
-
-        const decipher = createDecipheriv('aes-128-cbc', key, iv);
-        let decrypted = Buffer.concat([decipher.update(content), decipher.final()]);
-
-        return JSON.parse(decrypted.toString());
-    } catch (error) {
-      throw new Error(error.message);
-    }
-};
-
 
 async function mediafire(url) {
 	let res = await axios.get(url)
@@ -195,31 +175,68 @@ function sfilemobi(url) {
 	})
 }
 
-async function ytmp3(url, quality = 128) {
-  if (!ytdl.validateURL(url)) {
-    return { status: false, message: "Invalid YouTube URL" };
-  }
+async function ytmp3(url, quality = '128') {
+  try {
+    // Cek URL valid atau tidak
+    const search = await yts(url);
+    if (!search || !search.videos.length) {
+      return { status: false, message: `Video tidak ditemukan untuk URL: ${url}` };
+    }
 
-  try {
-    const info = await ytdl.getInfo(url);
-    const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+    const video = search.videos[0];
 
-    const selected = audioFormats.find(f => f.audioBitrate === quality) || audioFormats[0];
+    // Panggil Loader.to API
+    const res = await axios.get('https://loader.to/ajax/download.php', {
+      params: {
+        format: 'mp3',
+        url,
+        api: 'dfcb6d76f2f6a9894gjkege8a4ab232222' // ← ganti pakai env kalau mau aman
+      }
+    });
 
-    return {
-      status: true,
-      title: info.videoDetails.title,
-      channel: info.videoDetails.author.name,
-      duration: new Date(info.videoDetails.lengthSeconds * 1000).toISOString().substr(11, 8),
-      thumbnail: info.videoDetails.thumbnails.at(-1)?.url || '',
-      availableQuality: audioFormats.map(f => f.audioBitrate),
-      url: selected.url,
-      quality: `${selected.audioBitrate}kbps`
-    };
-  } catch (err) {
-    console.error("ytmp3 error:", err);
-    return { status: false, message: "Failed to fetch video/audio info" };
-  }
+    const result = res.data;
+    if (!result.success || !result.id) {
+      return { status: false, message: result.info || "Gagal membuat download task." };
+    }
+
+    const downloadId = result.id;
+
+    // Cek progress hingga 100%
+    let downloadUrl = '';
+    for (let i = 0; i < 10; i++) {
+      const progress = await axios.get('https://p.oceansaver.in/ajax/progress.php', {
+        params: { id: downloadId }
+      });
+
+      const data = progress.data;
+
+      if (data.success && data.progress === 1000) {
+        downloadUrl = data.download_url;
+        break;
+      }
+
+      await new Promise((r) => setTimeout(r, 3000)); // tunggu 3 detik
+    }
+
+    if (!downloadUrl) {
+      return { status: false, message: "Gagal mendapatkan URL unduhan." };
+    }
+
+    return {
+      status: true,
+      title: video.title,
+      channel: video.author.name,
+      duration: video.timestamp,
+      thumbnail: video.thumbnail,
+      quality: `${quality}kbps`,
+      url: downloadUrl
+    };
+
+  } catch (err) {
+    console.error("ytmp3 error:", err);
+    return { status: fa
+lse, message: err.message || "Gagal memproses video." };
+  }
 }
   
 async function ytmp4(url) {
