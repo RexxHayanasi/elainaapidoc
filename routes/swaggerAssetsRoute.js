@@ -432,8 +432,7 @@ const fetchAsset = async (url, contentType) => {
       headers: {
         'Accept': contentType,
         'Cache-Control': 'public, max-age=86400' // 1 day cache
-      },
-      timeout: 5000 // 5 second timeout
+      }
     });
     assetCache.set(url, response.data);
     return response.data;
