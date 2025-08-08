@@ -8,8 +8,7 @@ const fs = require("fs");
 const router = express.Router();
 
 // Enhanced Custom Swagger UI Theme with Modern Design
-const customCss = `
-/* ======== ENHANCED CUSTOM SWAGGER UI THEME ======== */
+const customCss = `/* ======== ENHANCED CUSTOM SWAGGER UI THEME ======== */
 :root {
   /* Color Scheme */
   --primary-color: #6c63ff;
@@ -428,8 +427,7 @@ h1::after {
   border: 1px solid var(--success-color) !important;
   border-radius: var(--border-radius);
   padding: 1rem;
-}
-`;
+}`;
 
 // Enhanced Swagger UI options
 const swaggerOptions = {
