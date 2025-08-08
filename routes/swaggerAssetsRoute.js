@@ -8,76 +8,68 @@ const fs = require("fs");
 const router = express.Router();
 
 // Enhanced Custom Swagger UI Theme with Modern Design
-const customCss = `/* ======== ENHANCED CUSTOM SWAGGER UI THEME ======== */
+const customCss = `/* ======== MODERN SWAGGER UI THEME ======== */
 :root {
   /* Color Scheme */
-  --primary-color: #6c63ff;
-  --primary-dark: #121212;
-  --primary-light: #1e1e1e;
-  --primary-lighter: #2a2a2a;
-  --text-color: #f0f0f0;
-  --text-muted: #b0b0b0;
-  --accent-color: #8a85ff;
-  --success-color: #4caf50;
-  --info-color: #2196f3;
-  --warning-color: #ff9800;
-  --danger-color: #f44336;
-  --border-color: #333;
-  --border-radius: 8px;
-  --transition-speed: 0.3s;
-  --shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  --shadow-hover: 0 6px 12px rgba(108, 99, 255, 0.2);
+  --primary: #6366f1;
+  --primary-dark: #0f172a;
+  --primary-light: #1e293b;
+  --primary-lighter: #334155;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --success: #10b981;
+  --info: #3b82f6;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --border: #475569;
+  --radius: 12px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+  --shadow-hover: 0 20px 25px -5px rgba(99, 102, 241, 0.2);
 }
 
-/* Animations */
+/* Modern Animations */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes pulse {
-  0% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(108, 99, 255, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(108, 99, 255, 0); }
-}
-
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 /* Base Styles */
 body {
-  background-color: var(--primary-dark) !important;
-  color: var(--text-color) !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  background: var(--primary-dark);
+  color: var(--text);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.6;
-  transition: all var(--transition-speed) ease;
   scroll-behavior: smooth;
 }
 
-/* Layout Components */
+/* Glassmorphism Topbar */
 .topbar {
-  background-color: rgba(30, 30, 30, 0.95) !important;
-  border-bottom: 1px solid var(--border-color) !important;
-  backdrop-filter: blur(10px);
-  padding: 0.75rem 1.5rem;
+  background: rgba(30, 41, 59, 0.8) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border) !important;
+  padding: 0.75rem 2rem;
   box-shadow: var(--shadow);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 50;
 }
 
 .topbar-wrapper {
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  max-width: 1400px;
+  max-width: 1600px;
   margin: 0 auto;
 }
 
 .topbar-wrapper img {
-  filter: brightness(1.2) contrast(1.1);
   height: 42px;
   transition: transform 0.3s ease;
 }
@@ -86,246 +78,184 @@ body {
   transform: scale(1.05);
 }
 
-/* Navigation & Sidebar */
-.scheme-container {
-  background-color: var(--primary-dark) !important;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border-color);
-}
-
+/* Sidebar - Modern Card Style */
 .opblock-tag {
-  background-color: var(--primary-dark) !important;
-  border-radius: var(--border-radius);
-  margin: 0.5rem 0;
-  padding: 1rem 1.25rem;
-  transition: all var(--transition-speed) ease;
-  border-left: 3px solid transparent;
+  background: var(--primary-light) !important;
+  border-radius: var(--radius) !important;
+  margin: 0.75rem 0;
+  padding: 1.25rem !important;
+  border-left: 4px solid transparent !important;
+  transition: all var(--transition);
+  box-shadow: var(--shadow);
 }
 
 .opblock-tag:hover {
-  background-color: var(--primary-light) !important;
-  border-left-color: var(--primary-color);
-  transform: translateX(3px);
+  border-left-color: var(--primary) !important;
+  transform: translateX(4px);
 }
 
-/* Operation Blocks */
+/* Operation Blocks - Neumorphic Design */
 .opblock {
-  background-color: var(--primary-light) !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: var(--border-radius);
-  margin: 1.5rem 0;
-  box-shadow: var(--shadow);
+  background: var(--primary-light) !important;
+  border: none !important;
+  border-radius: var(--radius) !important;
+  margin: 2rem 0 !important;
+  box-shadow: 
+    8px 8px 16px rgba(15, 23, 42, 0.5),
+    -8px -8px 16px rgba(30, 41, 59, 0.5);
   opacity: 0;
   transform: translateY(15px);
-  animation: fadeIn 0.5s ease forwards;
-  animation-delay: calc(var(--order) * 0.05s);
+  animation: fadeIn 0.6s ease forwards;
 }
 
 .opblock:hover {
-  border-color: var(--primary-color) !important;
-  box-shadow: var(--shadow-hover);
+  box-shadow: 
+    12px 12px 24px rgba(15, 23, 42, 0.6),
+    -12px -12px 24px rgba(30, 41, 59, 0.6);
 }
 
 .opblock .opblock-summary {
-  background-color: var(--primary-lighter) !important;
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-  padding: 1.25rem;
-  transition: all var(--transition-speed) ease;
+  background: var(--primary-lighter) !important;
+  border-radius: var(--radius) var(--radius) 0 0 !important;
+  padding: 1.25rem !important;
 }
 
+/* HTTP Method Badges - Modern Flat Design */
 .opblock-summary-method {
   font-weight: 700;
   padding: 0.5rem 1rem;
-  border-radius: 4px;
+  border-radius: 6px;
   min-width: 80px;
   text-align: center;
-  text-transform: uppercase;
+  font-size: 0.75rem;
   letter-spacing: 0.5px;
-  font-size: 0.8rem;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  transition: all var(--transition-speed) ease;
+  text-transform: uppercase;
+  box-shadow: none;
+  transition: all var(--transition);
 }
 
-/* HTTP Method Colors */
 .opblock-summary-method.GET {
-  background-color: var(--success-color) !important;
+  background: var(--success) !important;
 }
 
 .opblock-summary-method.POST {
-  background-color: var(--info-color) !important;
+  background: var(--info) !important;
 }
 
 .opblock-summary-method.PUT {
-  background-color: var(--warning-color) !important;
+  background: var(--warning) !important;
 }
 
 .opblock-summary-method.DELETE {
-  background-color: var(--danger-color) !important;
+  background: var(--danger) !important;
 }
 
 .opblock-summary-method.PATCH {
-  background-color: #9c27b0 !important;
+  background: #8b5cf6 !important;
 }
 
-.opblock-summary-method.HEAD,
-.opblock-summary-method.OPTIONS {
-  background-color: #607d8b !important;
-}
-
-/* Response Section */
-.responses-wrapper {
-  background-color: var(--primary-dark) !important;
-}
-
+/* Response Section - Modern Card */
 .responses-inner {
-  padding: 1.5rem;
-  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  background: var(--primary-light) !important;
+  border-radius: 0 0 var(--radius) var(--radius) !important;
+  padding: 1.5rem !important;
 }
 
-.response-col_status {
-  color: var(--accent-color);
-  font-weight: 600;
-}
-
-/* Models & Schemas */
+/* Models - Glassmorphism Effect */
 .model-box {
-  background-color: var(--primary-dark) !important;
-  border: 1px solid var(--border-color);
-  border-radius: var(--border-radius);
-  padding: 1.5rem;
-  margin: 1rem 0;
-  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+  background: rgba(30, 41, 59, 0.7) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  padding: 1.5rem !important;
+  margin: 1.5rem 0 !important;
 }
 
-/* Interactive Elements */
-.execute-wrapper {
-  background-color: var(--primary-light) !important;
-  border-radius: var(--border-radius);
-  padding: 1.5rem;
-  margin: 1rem 0;
-}
-
+/* Buttons - Modern Flat Design */
 .execute {
-  background-color: var(--primary-color) !important;
+  background: var(--primary) !important;
   color: white !important;
   font-weight: 600;
-  border-radius: var(--border-radius);
-  padding: 0.75rem 1.5rem;
-  transition: all var(--transition-speed) ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  border-radius: var(--radius) !important;
+  padding: 0.75rem 1.5rem !important;
+  border: none !important;
+  transition: all var(--transition) !important;
 }
 
 .execute:hover {
-  background-color: var(--accent-color) !important;
+  background: #4f46e5 !important;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.3);
+  box-shadow: var(--shadow-hover);
 }
 
 .btn.authorize {
-  background-color: var(--accent-color) !important;
-  border-radius: var(--border-radius);
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  transition: all var(--transition-speed) ease;
+  background: var(--primary) !important;
+  border-radius: var(--radius) !important;
+  padding: 0.75rem 1.5rem !important;
+  transition: all var(--transition) !important;
 }
 
 .btn.authorize:hover {
-  background-color: var(--primary-color) !important;
+  background: #4f46e5 !important;
   transform: translateY(-2px);
 }
 
-/* Form Elements */
+/* Inputs - Modern Style */
 input, textarea, select {
-  background-color: #1a1a1a !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: var(--border-radius) !important;
+  background: rgba(15, 23, 42, 0.5) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
   padding: 0.75rem 1rem !important;
-  transition: all var(--transition-speed) ease;
+  transition: all var(--transition) !important;
 }
 
 input:focus, textarea:focus, select:focus {
-  border-color: var(--primary-color) !important;
-  box-shadow: 0 0 0 2px rgba(108, 99, 255, 0.2) !important;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+  outline: none;
 }
 
-/* Code & Syntax Highlighting */
+/* Code Blocks - Dracula Inspired */
 pre, code {
-  background-color: #1a1a1a !important;
-  color: #00ff99 !important;
+  background: #282a36 !important;
+  color: #f8f8f2 !important;
   font-family: 'Fira Code', monospace;
-  border-radius: var(--border-radius);
-  padding: 1rem !important;
-  border: 1px solid #333;
-  line-height: 1.5;
+  border-radius: var(--radius) !important;
+  padding: 1.25rem !important;
+  border: none !important;
 }
 
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text-color) !important;
-  font-weight: 600;
+code {
+  padding: 0.3em 0.6em !important;
+  background: #44475a !important;
 }
 
-h1 {
-  font-size: 2.25rem;
-  margin-bottom: 1.5rem;
-  position: relative;
+/* Tables - Modern Styling */
+table {
+  border-radius: var(--radius) !important;
+  overflow: hidden !important;
+  background: var(--primary-light) !important;
+  box-shadow: var(--shadow) !important;
 }
 
-h1::after {
-  content: '';
-  position: absolute;
-  bottom: -0.5rem;
-  left: 0;
-  width: 60px;
-  height: 3px;
-  background: var(--primary-color);
+th {
+  background: var(--primary-lighter) !important;
+  color: var(--primary) !important;
 }
 
-/* Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+tr:hover {
+  background: rgba(99, 102, 241, 0.05) !important;
 }
 
-::-webkit-scrollbar-track {
-  background: var(--primary-dark);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-color);
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .topbar-wrapper {
-    padding: 0.5rem;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .opblock {
-    margin: 1rem 0;
-  }
-  
-  .scheme-container {
-    padding: 0.5rem;
-  }
-}
-
-/* Floating Theme Toggle */
+/* Floating Action Button */
 .swagger-ui .theme-toggle {
   position: fixed;
   bottom: 2rem;
   right: 2rem;
   width: 3.5rem;
   height: 3.5rem;
-  background: var(--primary-color);
+  background: var(--primary);
   color: white;
   border: none;
   border-radius: 50%;
@@ -333,16 +263,50 @@ h1::after {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
-  z-index: 9999;
-  font-size: 1.5rem;
-  transition: all var(--transition-speed) ease;
+  box-shadow: var(--shadow);
+  z-index: 100;
+  font-size: 1.25rem;
+  transition: all var(--transition);
 }
 
 .swagger-ui .theme-toggle:hover {
-  background: var(--accent-color);
+  background: #4f46e5;
   transform: scale(1.1);
-  animation: pulse 1.5s infinite, float 3s ease-in-out infinite;
+  animation: pulse 1.5s infinite;
+}
+
+/* Scrollbar - Modern Style */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4f46e5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  :root {
+    --radius: 8px;
+  }
+  
+  .topbar {
+    padding: 0.5rem 1rem;
+  }
+  
+  .opblock {
+    margin: 1rem 0 !important;
+  }
 }
 
 /* Loading Animation */
@@ -354,13 +318,13 @@ h1::after {
   display: inline-block;
   width: 1.5rem;
   height: 1.5rem;
-  border: 3px solid rgba(108, 99, 255, 0.3);
+  border: 3px solid rgba(99, 102, 241, 0.3);
   border-radius: 50%;
-  border-top-color: var(--primary-color);
+  border-top-color: var(--primary);
   animation: spin 1s ease-in-out infinite;
 }
 
-/* Tooltips */
+/* Tooltips - Modern Style */
 [data-tooltip] {
   position: relative;
 }
@@ -372,60 +336,50 @@ h1::after {
   left: 50%;
   transform: translateX(-50%);
   background: var(--primary-light);
-  color: var(--text-color);
+  color: var(--text);
   padding: 0.5rem 1rem;
-  border-radius: var(--border-radius);
+  border-radius: var(--radius);
   font-size: 0.875rem;
   white-space: nowrap;
   z-index: 100;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow);
-}
-
-/* Enhanced Model Tabs */
-.tab {
-  background: var(--primary-light);
-  border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
-  padding: 0.75rem 1.5rem !important;
-  transition: all var(--transition-speed) ease;
-}
-
-.tab.active {
-  background: var(--primary-color) !important;
-  color: white !important;
 }
 
 /* Parameter Styles */
 .parameters {
-  border-radius: var(--border-radius);
+  border-radius: var(--radius);
   overflow: hidden;
+  background: var(--primary-light);
+  box-shadow: var(--shadow);
 }
 
 .parameter__name {
   font-weight: 600;
-  color: var(--accent-color);
+  color: var(--primary);
 }
 
-/* Server Selection */
+/* Server Selection - Modern Card */
 .servers {
   background: var(--primary-light) !important;
-  border-radius: var(--border-radius);
+  border-radius: var(--radius) !important;
   padding: 1rem !important;
+  box-shadow: var(--shadow) !important;
 }
 
-/* Error Messages */
+/* Error Messages - Modern Alert */
 .errors-wrapper {
-  background: rgba(244, 67, 54, 0.1) !important;
-  border: 1px solid var(--danger-color) !important;
-  border-radius: var(--border-radius);
+  background: rgba(239, 68, 68, 0.1) !important;
+  border: 1px solid var(--danger) !important;
+  border-radius: var(--radius) !important;
   padding: 1rem;
 }
 
 /* Success Messages */
 .success-message {
-  background: rgba(76, 175, 80, 0.1) !important;
-  border: 1px solid var(--success-color) !important;
-  border-radius: var(--border-radius);
+  background: rgba(16, 185, 129, 0.1) !important;
+  border: 1px solid var(--success) !important;
+  border-radius: var(--radius) !important;
   padding: 1rem;
 }`;
 
