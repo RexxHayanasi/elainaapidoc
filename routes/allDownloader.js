@@ -451,16 +451,30 @@ async function shortener(e) {
 async function tiktok(url) {
   return new Promise(async (resolve, reject) => {
     try {
-      let t = await axios("https://lovetik.com/api/ajax/search", { method: "post", data: new URLSearchParams(Object.entries({ query: url })) });
+      // Request ke API Tikwm
+      let { data } = await axios.post("https://www.tikwm.com/api", {}, {
+        params: { url, hd: 1 },
+        headers: {
+          "Content-Type": "application/json",
+          "User-Agent": "Mozilla/5.0"
+        }
+      });
 
+      // Pastikan sukses
+      if (data.code !== 0) {
+        return reject(new Error(data.msg || "Gagal mengambil data TikTok"));
+      }
+
+      // Ambil data & rapikan struktur seperti API lama
       const result = {};
-      result.title = clean(t.data.desc);
-      result.author = clean(t.data.author);
-      result.nowm = await shortener((t.data.links[0].a || "").replace("https", "http"));
-      result.watermark = await shortener((t.data.links[1].a || "").replace("https", "http"));
-      result.audio = await shortener((t.data.links[2].a || "").replace("https", "http"));
-      result.thumbnail = await shortener(t.data.cover);
-      
+      result.title = data.data.title;
+      result.author = data.data.author.nickname;
+      result.nowm = data.data.play;     // Video tanpa watermark
+      result.watermark = data.data.wmplay; // Video dengan watermark
+      result.audio = data.data.music;   // Audio original
+      result.thumbnail = data.data.cover;
+      result.images = data.data.images || []; // Kalau slide
+
       resolve(result);
     } catch (error) {
       reject(error);
